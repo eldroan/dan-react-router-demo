@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# React router demo
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Para agregar react-router a un proyecto tan solo debemos ejecutar
+```bash
+$ yarn add react-router-dom
+```
 
-## Available Scripts
+O si estamos usando `npm`
 
-In the project directory, you can run:
+```bash
+$ npm install react-router-dom
+```
+## Sobre el repositorio
 
-### `yarn start`
+Este respositorio contine un proyecto de ejemplo diseñado para mostrar distintos tipos de rutas que se pueden declarar utilizando react router. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Para inicializar el proyecto se utilizó create-react-app pero no es un requisito necesario para usar react-router.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Para ejecutarlo, primero instalar las dependencias
+```bash
+$ yarn
+```
 
-### `yarn test`
+Y luego ejecutar el proyecto
+```
+$ yarn start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Una vez inicializado veremos una barra de navegación horizontal con botones para distintos ejemplos de rutas, estos son:
 
-### `yarn build`
+- Home: Es la ruta más general que renderizamos al tratar de acceder a `http://localhost:3000/` o `http://localhost:3000`
+- Ruta simple: Es un ejemplo de una ruta nombrada de nuestra app que definimos dentro del router
+- Ruta nesteada: En este caso definimos una ruta `nested` y dentro un segundo switch con dos rutas `first` y `second` dentro de la ruta padre
+- Ruta dinámica: Un ejemplo de una ruta donde admitimos cualquier ruta de la forma `/dynamic/:id` y recuperamos el valor de `id` utilizando herramientas de la librería.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Sobre react router
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Utilizando react-router podemos definir las rutas de nuestra aplicación de manera `declarativa`. Existen 3 tipos de componentes principales en la librería
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Los `routers` o ruteadores como `<BrowserRouter>` y `<HashRouter>`
+- Los `matchers` o comparadores de rutas como `<Route>` y `<Switch>`
+- Y los componentes de navegación como `<Link>`
 
-### `yarn eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Routers
+La raíz de toda aplicación que utiliza react router debe contener un componente `router`  (`BrowserRouter` o `HashRouter`) y tipicamente se wrapea el componente `<App />` con el.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+> HashRouter vs BrowserRouter
+>
+> La unica diferencia para el front de nuestra app es que entre la url base y una ruta el HashRouter agrega un `#` (ej: `http://example.com/#/your/page`) mientras que el BrowserRouter utiliza las urls tradicionales (ej: `http://example.com/your/page`). 
+>
+> La razón para usar uno u otro esta en la configuración del servidor. Cuando desarrollamos una single page application (SPA) estamos pidiéndole a javascript que maneje la navegación, para esto necesitamos que nuestro servidor responda con nuestra aplicación para todas las rutas posibles.
+>
+> Un servidor configurado para servir páginas 'tradicionales' (ej: php) retorna recursos distintos en cada ruta por lo que `your/page` en nuestra aplicación retornaría **404 not found**. Aquí es donde cobra sentido el hash router ya que lo que viene luego de `#` **nunca se envia al servidor** por lo cual este responde como si hubiera recibido `http://example.com` y nuestra app maneja la ruta `your/page` evitandonos agregar una configuración especial en el servidor.
+> 
+> Utilizando create-react-app podemos hacer uso de ambos al momento de desarrollo pero para usar el browser router necesitamos [configuración adicional](https://create-react-app.dev/docs/deployment/#serving-apps-with-client-side-routing).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Matchers
+Dentro de un `router` es que declaramos nuestros comparadores de rutas. Cuando declaramos un `Switch` este busca entre sus hijos los elementos `Route` cuyo path matchee la url actual. Este matcheo sigue las siguientes reglas
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Una ruta se considera que es un match si el `path` esta contenido en la url actual. Es por esto que `/` siempre es un match.
+- Si una `Route` es un match se renderizará el componente definido como children de esa route.
+- El componente `Switch` busca **EL PRIMER** elemento que matchee en el orden de declaración. Es por esto que nuestras rutas más especificas deberían declararse **antes** que las menos especificas. Por ejemplo, en caso de tener una ruta `/` esta debería ser la última.
+- Si ninguna ruta es match no se renderiza nada.
 
-## Learn More
+### Navegación
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+La librería provee un componente `Link` para manjar los links dentro de nuestra aplicación
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```jsx
+<Link to="/">Home</Link>
+```
 
-### Code Splitting
+Este componente es el equivalente al anchor `<a>` de html (de hecho, renderiza uno en el dom al ser utilizado) pero al utilizar react router no debemos utilziar los anchors tradicionales.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Ademas, otro componente interesante de navegación es `Redirect` el cual al momento de renderizarse furza la redirección al path declarado. Un patrón de uso podría ser el siguiente
 
-### Analyzing the Bundle Size
+```jsx
+const Profile = (props) => {
+  const isAuthenticated = !!props.user
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  return !isAuthenticated ? <Redirect to="/login" /> : <ProfilePage user={props.user} />
+}
+```
+## Sobre create-react-app
+Para la inicialización de este repositorio se utilizó [create react app](https://create-react-app.dev/) una herramienta para comenzar proyectos de react de manera sencilla, sin configuraciones.
