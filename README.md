@@ -14,6 +14,8 @@ $ npm install react-router-dom
 
 Este respositorio contine un proyecto de ejemplo diseñado para mostrar distintos tipos de rutas que se pueden declarar utilizando react router. 
 
+Una versión deployada del mismo puede verse en [dan-react-router-demo.netlify.app](dan-react-router-demo.netlify.app)
+
 Para inicializar el proyecto se utilizó create-react-app pero no es un requisito necesario para usar react-router.
 
 Para ejecutarlo, primero instalar las dependencias
