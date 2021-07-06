@@ -37,7 +37,7 @@ Una vez inicializado veremos una barra de navegación horizontal con botones par
 
 ## Sobre react router
 
-Utilizando react-router podemos definir las rutas de nuestra aplicación de manera `declarativa`. Existen 3 tipos de componentes principales en la librería
+Utilizando la librería [react router](https://reactrouter.com/) podemos definir las rutas de nuestra aplicación de manera `declarativa`. Existen 3 tipos de componentes principales en la librería
 
 - Los `routers` o ruteadores como `<BrowserRouter>` y `<HashRouter>`
 - Los `matchers` o comparadores de rutas como `<Route>` y `<Switch>`
